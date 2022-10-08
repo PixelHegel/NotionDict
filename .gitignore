@@ -1,0 +1,6 @@
+ui_main.py
+dist
+data
+notidict.egg-info
+notidict/dict.mdx
+notidict/__pycache__

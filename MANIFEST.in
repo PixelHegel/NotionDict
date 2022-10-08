@@ -1,0 +1,8 @@
+include README.rst
+include notidict/config.yml
+
+recursive-include tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+
+recursive-include config.yml
