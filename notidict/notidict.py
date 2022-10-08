@@ -1,15 +1,15 @@
 """
-NotiDict.
-Describe what this script does
+NotiDict
+NotiDict is a terminal dictionary application, you can use it to query the words from your own .mdx files,and the result will be shown by system notification. And it also supports uploading the result to Notion. You also can use it to upload highlight text to Notion. The best practice is to bind a shortcut to the app, then you can easily query the dict and highlight text anyevery.
 
 Usage:
- notidict --dict
- notidict --highlight
- name -h | --help
+ notidict -d | --dict
+ notidict -l | --highlight
+ notidict -h | --help
 
 Options:
-  --dict query the selected word
-  --highlight send the selected sentence to notion
+  --dict  query the selected word
+  --highlight  send the selected sentence to notion
 """
 import os
 import json
@@ -25,12 +25,15 @@ from readmdict import MDD, MDX
 import yaml
 from docopt import docopt
 
-from notidict import __version__
+#from notidict import __version__
 
 stream = open("notidict/config.yml", 'r')
 dictionary = yaml.safe_load(stream)
 filename = dictionary['mdx_dict_path']
 notion_vocabulary_database = dictionary['notion_vocabulary_database']
+notion_highlight_database = dictionary['notion_highlight_database']
+NOTION_API_KEY = os.getenv('NOTION_API_KEY')
+
 
 
 def sendmessage(title, message):
@@ -39,14 +42,6 @@ def sendmessage(title, message):
 
 
 def send_newword_to_notion(word, source, date, database):
-    NOTION_API_KEY = os.getenv('NOTION_API_KEY')
-
-    headers = {
-        'Authorization': f"Bearer {NOTION_API_KEY}",
-        # 'Content-Type': 'application/json',
-        'Notion-Version': '2022-06-28',
-    }
-
     json_data = {
         "parent": {
             "database_id": database
@@ -83,8 +78,63 @@ def send_newword_to_notion(word, source, date, database):
         }
     }
 
+    headers = {
+        'Authorization': f"Bearer {NOTION_API_KEY}",
+        'Notion-Version': '2022-06-28',
+    }
+
     response = requests.post(
         'https://api.notion.com/v1/pages', headers=headers, json=json_data)
+    return response
+
+def create_new_page_with_conetent(title,content,date,database):
+    url = "https://api.notion.com/v1/pages/"
+    payload = json.dumps({
+    "parent": {
+        "database_id": database
+    },
+    "properties": {
+        "Name": {
+        "title": [
+            {
+            "text": {
+                "content": title
+            }
+            }
+        ]
+        },
+        "Updated": {
+        "date": {
+            "start": date,
+            "end": None
+        }
+        }
+    },
+    "children": [
+        {
+        "object": "block",
+        "type": "paragraph",
+        "paragraph": {
+            "rich_text": [
+            {
+                "type": "text",
+                "text": {
+                "content": content
+                }
+            }
+            ]
+        }
+        }
+    ]
+    })
+    headers = {
+    'Content-Type': 'application/json',
+    'Notion-Version': '2022-06-28',
+    'Authorization': f"Bearer {NOTION_API_KEY}",
+
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
     return response
 
 
@@ -106,27 +156,56 @@ def query_page_by_title(title, database):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+    return response.json()['results']
 
-    return response.json()['result']
+
+def update_highlight_to_page(title,content,database):
+    url = "https://api.notion.com/v1/blocks/{0}/children".format(database)
+    payload = json.dumps({
+    "children": [
+        {
+        "object": "block",
+        "type": "paragraph",
+        "paragraph": {
+            "rich_text": [
+            {
+                "type": "text",
+                "text": {
+                "content": content
+                }
+            }
+            ]
+        }
+        }
+    ]
+    })
+    headers = {
+    'Authorization':  f"Bearer {NOTION_API_KEY}",
+    'Content-Type': 'application/json',
+    'Notion-Version': '2022-06-28'
+    }
+
+    response = requests.request("PATCH", url, headers=headers, data=payload)
 
 
 def get_selected_text():
     var = os.popen('xsel').read()
     return var
 
-
-def query_dict():
+def get_application_title():
     gi.require_version("Wnck", "3.0")
     from gi.repository import Wnck
     scr = Wnck.Screen.get_default()
     scr.force_update()
-    source = scr.get_active_window().get_name()
+    return scr.get_active_window().get_name()
+ 
 
+def query_dict():
+    source = get_application_title()
     var = get_selected_text()
+
     headwords = [*MDX(filename)]
-
     items = [*MDX(filename).items()]
-
     queryword = var.lower().strip().replace(',', '').replace('.', '')
 
     word_index = headwords.index(queryword.encode())
@@ -141,15 +220,28 @@ def query_dict():
         word, source, today, notion_vocabulary_database)
 
 
+def update_highlight():
+    source = get_application_title()
+    content = get_selected_text()
+    result = query_page_by_title(source,notion_highlight_database)
+    if len(result)>0:
+        page_id = result[0]['id']
+        update_highlight_to_page(source,content,page_id)
+    else:
+        today = date.today().strftime("%Y-%m-%d")
+        respone = create_new_page_with_conetent(source, content, today, notion_highlight_database)
+    sendmessage('Highlight saved to', source)
+
+
 def init(args):
-    if args["--dict"]:
+    if args["--dict"] or ["-d"]:
         query_dict()
-    if args["--highlight"]:
-        print("TODO")
+    if args["--highlight"] or args["-l"]:
+        update_highlight()
 
 
 def main():
-    args = docopt(__doc__, version=__version__)
+    args = docopt(__doc__)
     try:
         init(args)
     except KeyboardInterrupt:

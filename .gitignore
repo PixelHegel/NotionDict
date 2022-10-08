@@ -2,5 +2,6 @@ ui_main.py
 dist
 data
 notidict.egg-info
+notidict/config.yml
 notidict/dict.mdx
 notidict/__pycache__
