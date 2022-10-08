@@ -27,14 +27,15 @@ from docopt import docopt
 
 #from notidict import __version__
 
-stream = open("notidict/config.yml", 'r')
+def join(f):
+    return os.path.join(os.path.dirname(__file__), f)
+
+stream = open(join("config.yml"), 'r')
 dictionary = yaml.safe_load(stream)
 filename = dictionary['mdx_dict_path']
 notion_vocabulary_database = dictionary['notion_vocabulary_database']
 notion_highlight_database = dictionary['notion_highlight_database']
 NOTION_API_KEY = os.getenv('NOTION_API_KEY')
-
-
 
 def sendmessage(title, message):
     subprocess.Popen(['notify-send', title, message])
