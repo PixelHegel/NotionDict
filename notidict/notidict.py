@@ -119,8 +119,8 @@ def create_new_page_with_conetent(title, content, date, database):
         "children": [
             {
                 "object": "block",
-                "type": "paragraph",
-                "paragraph": {
+                "type": "quote",
+                "quote": {
                     "rich_text": [
                         {
                             "type": "text",
@@ -128,8 +128,24 @@ def create_new_page_with_conetent(title, content, date, database):
                                 "content": content
                             }
                         }
-                    ]
+                    ],
+                "color":"default"
                 }
+            },
+            {
+            "type": "callout",
+            "callout": {
+                "rich_text": [{
+                "type": "text",
+                "text": {
+                    "content": " "
+                }
+                }],
+                "icon": {
+                "emoji": "💡"
+                },
+                "color": "gray_background"
+            }
             }
         ]
     })
@@ -171,8 +187,8 @@ def update_highlight_to_page(title, content, database):
         "children": [
             {
                 "object": "block",
-                "type": "paragraph",
-                "paragraph": {
+                "type": "quote",
+                "quote": {
                     "rich_text": [
                         {
                             "type": "text",
@@ -180,8 +196,24 @@ def update_highlight_to_page(title, content, database):
                                 "content": content
                             }
                         }
-                    ]
+                    ],
+                "color":"default"
                 }
+            },
+            {
+            "type": "callout",
+            "callout": {
+                "rich_text": [{
+                "type": "text",
+                "text": {
+                    "content": " "
+                }
+                }],
+                "icon": {
+                "emoji": "💡"
+                },
+                "color": "gray_background"
+            }
             }
         ]
     })
