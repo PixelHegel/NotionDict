@@ -17,20 +17,18 @@ Examples:
  notidict dict book --config /home/username/config.yml
  notidict highlight "This is a highlight"
 """
-import os
 import json
+import os
 import subprocess
-from datetime import date
 import sys
+from datetime import date
 
+import pyclip
 import requests
-from readmdict import MDD, MDX
 import yaml
 from docopt import docopt
-import pyclip
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-
 
 sysstr = sys.platform
 
@@ -298,7 +296,7 @@ def get_application_title():
         return title.decode('utf-8')
 
 
-def query_dict(args):
+def query_dict(args,MDX,MDD):
     source = get_application_title()
     content = get_selected_text(args)
     if len(content) > 3:
@@ -356,7 +354,8 @@ def init(args):
 
 
     if args["dict"]:
-        query_dict(args)
+        from readmdict import MDD, MDX
+        query_dict(args,MDX,MDD)
     if args["highlight"]:
         update_highlight(args)
 
