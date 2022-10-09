@@ -351,6 +351,9 @@ def init(args):
     NOTION_VOCABULARY_DATABASE = dictionary['NOTION_VOCABULARY_DATABASE']
     NOTION_HIGHLIGHT_DATABASE = dictionary['NOTION_HIGHLIGHT_DATABASE']
     NOTION_API_KEY = os.getenv('NOTION_API_KEY')
+    if len(NOTION_API_KEY) == 0:
+        NOTION_API_KEY = dictionary['NOTION_API_KEY']
+
 
     if args["dict"]:
         query_dict(args)
