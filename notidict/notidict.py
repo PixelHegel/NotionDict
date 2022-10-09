@@ -23,7 +23,6 @@ import subprocess
 from datetime import date
 import sys
 
-import gi
 import requests
 from bs4 import BeautifulSoup
 from pyquery import PyQuery as pq
@@ -31,12 +30,11 @@ from readmdict import MDD, MDX
 import yaml
 from docopt import docopt
 import pyclip
-import platform
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 
-sysstr = platform.system()
+sysstr = sys.platform
 
 #from notidict import __version__
 DICT_PATH = ""
@@ -68,9 +66,9 @@ def displayNotification(message,title=None,subtitle=None,soundname=None):
 
 
 def sendmessage(title, message):
-    if sysstr == 'Linux':
+    if sysstr == 'linux':
         subprocess.Popen(['notify-send', title, message])
-    elif sysstr == 'Darwin':
+    elif sysstr == 'darwin':
         displayNotification(message=message,title=title)
     return
 
@@ -290,11 +288,17 @@ def get_selected_text(args):
 
 
 def get_application_title():
-    gi.require_version("Wnck", "3.0")
-    from gi.repository import Wnck
-    scr = Wnck.Screen.get_default()
-    scr.force_update()
-    return scr.get_active_window().get_name()
+    if sysstr == 'linux':
+        import gi
+        gi.require_version("Wnck", "3.0")
+        from gi.repository import Wnck
+        scr = Wnck.Screen.get_default()
+        scr.force_update()
+        return scr.get_active_window().get_name()
+    elif sysstr == 'darwin':
+        scpt_path = join("get_active_window_title_macos.scpt")
+        title = subprocess.check_output(['osascript', scpt_path])
+        return title
 
 
 def query_dict(args):

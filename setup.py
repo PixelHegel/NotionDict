@@ -1,3 +1,13 @@
+'''
+Author: pixelhegel pixelhegel@gmail.com
+Date: 2022-10-08 13:10:59
+LastEditors: pixelhegel pixelhegel@gmail.com
+LastEditTime: 2022-10-09 16:42:28
+FilePath: /NotiDict/setup.py
+Description: 
+
+Copyright (c) 2022 by pixelhegel pixelhegel@gmail.com, All Rights Reserved. 
+'''
 #!/usr/bin/env python
 
 try:
@@ -31,7 +41,7 @@ setup(
     package_dir={'notidict':
                  'notidict'},
     include_package_data=True,
-    package_data={'': ['config.yml']},
+    package_data={'': ['config.yml','get_active_window_title_macos.scpt']},
     install_requires=requirements,
     license='Apache License',
     zip_safe=False,
