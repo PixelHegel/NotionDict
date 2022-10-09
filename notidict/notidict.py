@@ -24,8 +24,6 @@ from datetime import date
 import sys
 
 import requests
-from bs4 import BeautifulSoup
-from pyquery import PyQuery as pq
 from readmdict import MDD, MDX
 import yaml
 from docopt import docopt
@@ -47,23 +45,22 @@ def join(f):
     return os.path.join(os.path.dirname(__file__), f)
 
 def displayNotification(message,title=None,subtitle=None,soundname=None):
-	"""
-		Display an OSX notification with message title an subtitle
-		sounds are located in /System/Library/Sounds or ~/Library/Sounds
-	"""
-	titlePart = ''
-	if(not title is None):
-		titlePart = 'with title "{0}"'.format(title)
-	subtitlePart = ''
-	if(not subtitle is None):
-		subtitlePart = 'subtitle "{0}"'.format(subtitle)
-	soundnamePart = ''
-	if(not soundname is None):
-		soundnamePart = 'sound name "{0}"'.format(soundname)
+    """
+        Display an OSX notification with message title an subtitle
+        sounds are located in /System/Library/Sounds or ~/Library/Sounds
+    """
+    titlePart = ''
+    if(not title is None):
+        titlePart = 'with title "{0}"'.format(title)
+    subtitlePart = ''
+    if(not subtitle is None):
+        subtitlePart = 'subtitle "{0}"'.format(subtitle)
+    soundnamePart = ''
+    if(not soundname is None):
+        soundnamePart = 'sound name "{0}"'.format(soundname)
 
-	appleScriptNotification = 'display notification "{0}" {1} {2} {3}'.format(message,titlePart,subtitlePart,soundnamePart)
-	os.system("osascript -e '{0}'".format(appleScriptNotification))
-
+    appleScriptNotification = 'display notification "{0}" {1} {2} {3}'.format(message,titlePart,subtitlePart,soundnamePart)
+    os.system("osascript -e '{0}'".format(appleScriptNotification))
 
 def sendmessage(title, message):
     if sysstr == 'linux':
@@ -298,7 +295,7 @@ def get_application_title():
     elif sysstr == 'darwin':
         scpt_path = join("get_active_window_title_macos.scpt")
         title = subprocess.check_output(['osascript', scpt_path])
-        return title
+        return title.decode('utf-8')
 
 
 def query_dict(args):
@@ -312,8 +309,8 @@ def query_dict(args):
         word_index = headwords.index(queryword.encode())
         word, html = items[word_index]
         word, html = word.decode(), html.decode()
-
-        sendmessage(word, str(html))
+        message = str(html)[0:90]
+        sendmessage(word, message)
         today = date.today().strftime("%Y-%m-%d")
         respone = send_newword_to_notion(
             word, source, today, NOTION_VOCABULARY_DATABASE)

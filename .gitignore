@@ -3,5 +3,5 @@ dist
 data
 notidict.egg-info
 notidict/config.yml
-notidict/dict.mdx
+notidict/*.mdx
 notidict/__pycache__

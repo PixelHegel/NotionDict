@@ -2,7 +2,7 @@
 Author: pixelhegel pixelhegel@gmail.com
 Date: 2022-10-08 13:10:59
 LastEditors: pixelhegel pixelhegel@gmail.com
-LastEditTime: 2022-10-09 16:42:28
+LastEditTime: 2022-10-09 18:24:25
 FilePath: /NotiDict/setup.py
 Description: 
 
@@ -23,7 +23,10 @@ with open('README.rst') as readme_file:
 
 requirements = [
     'readmdict',
-    'requests'
+    'requests',
+    'docopt',
+    'pyclip',
+    'PyYAML'
 
 ]
 
