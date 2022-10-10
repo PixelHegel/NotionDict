@@ -1,8 +1,7 @@
-setuptools==60.8.2;python_version<"3.8.0"
-setuptools==63.0.0;python_version>="3.8.0"
 docopt==0.6.2
 pyclip==0.6.0
 PyYAML==6.0
 readmdict==0.1.1
 requests==2.28.1
 urllib3==1.26.12
+setuptools==63.0.0
