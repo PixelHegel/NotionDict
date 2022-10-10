@@ -1,6 +1,8 @@
 =============================================================================
 ``NotionDict`` - A terminal dictionary application
 =============================================================================
+.. image:: https://api.travis-ci.com/PixelHegel/NotionDict.svg?branch=main
+        :target: https://app.travis-ci.com/github/PixelHegel/NotionDict
 
 
 NotionDict
