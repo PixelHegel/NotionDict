@@ -2,8 +2,8 @@
 Author: pixelhegel pixelhegel@gmail.com
 Date: 2022-10-08 13:10:59
 LastEditors: pixelhegel pixelhegel@gmail.com
-LastEditTime: 2022-10-09 18:24:25
-FilePath: /NotiDict/setup.py
+LastEditTime: 2022-10-10 10:58:17
+FilePath: /NotionDict/setup.py
 Description: 
 
 Copyright (c) 2022 by pixelhegel pixelhegel@gmail.com, All Rights Reserved. 
@@ -15,7 +15,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-from notidict import __version__
+from notiondict import __version__
 
 
 with open('README.rst') as readme_file:
@@ -31,18 +31,18 @@ requirements = [
 ]
 
 setup(
-    name='notidict',
+    name='notiondict',
     version=__version__,
     description='A high customized dictionary',
     long_description=readme,
     author='Pixelhegel',
     author_email='Pixelhegel@gmail.com',
-    url='https://github.com/pixelhegel/notidict',
+    url='https://github.com/pixelhegel/notiondict',
     packages=[
-        'notidict',
+        'notiondict',
     ],
-    package_dir={'notidict':
-                 'notidict'},
+    package_dir={'notiondict':
+                 'notiondict'},
     include_package_data=True,
     package_data={'': ['config.yml','get_active_window_title_macos.scpt']},
     install_requires=requirements,
@@ -63,7 +63,7 @@ setup(
     test_suite='tests',
     entry_points={
         'console_scripts': [
-            'notidict=notidict.notidict:main',
+            'notiondict=notiondict.notiondict:main',
         ],
     },
 )

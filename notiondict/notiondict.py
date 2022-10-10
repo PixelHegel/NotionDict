@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
 """
-NotiDict
-NotiDict is a terminal dictionary application, you can use it to query the words from your own .mdx files,and the result will be shown by system notification. And it also supports uploading the result to Notion. You also can use it to upload highlight text to Notion. The best practice is to bind a shortcut to the app, then you can easily query the dict and highlight text anyevery.
+NotionDict
+NotionDict is a terminal dictionary application, you can use it to query the words from your own .mdx files,and the result will be shown by system notification. And it also supports uploading the result to Notion. You also can use it to upload highlight text to Notion. The best practice is to bind a shortcut to the app, then you can easily query the dict and highlight text anyevery.
 
 Usage:
- notidict dict <word> [--config <file-path>]
- notidict highlight <text> [--config <file-path>]
- notidict -h | --help
+ notiondict dict <word> [--config <file-path>]
+ notiondict highlight <text> [--config <file-path>]
+ notiondict -h | --help
 
 Options:
  --config <file-path>  your own config file
  --help -h  show help
 
 Examples:
- notidict dict book --config /home/username/config.yml
- notidict highlight "This is a highlight"
+ notiondict dict book --config /home/username/config.yml
+ notiondict highlight "This is a highlight"
 """
 import json
 import os
@@ -29,10 +29,11 @@ import yaml
 from docopt import docopt
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+import logging
 
 sysstr = sys.platform
 
-#from notidict import __version__
+#from notiondict import __version__
 DICT_PATH = ""
 NOTION_VOCABULARY_DATABASE = ""
 NOTION_HIGHLIGHT_DATABASE = ""
@@ -115,9 +116,11 @@ def send_newword_to_notion(word, source, date, database):
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
-
-    response = session.post(
-        'https://api.notion.com/v1/pages', headers=headers, json=json_data)
+    try:
+        response = session.post(
+            'https://api.notion.com/v1/pages', headers=headers, json=json_data)
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(e)
     return response
 
 
@@ -189,8 +192,10 @@ def create_new_page_with_conetent(title, content, date, database):
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
-
-    response = session.post(url, headers=headers, data=payload)
+    try:
+        response = session.post(url, headers=headers, data=payload)
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(e)
     return response
 
 
@@ -216,8 +221,10 @@ def query_page_by_title(title, database):
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
-
-    response = session.post(url, headers=headers, data=payload)
+    try:
+        response = session.post(url, headers=headers, data=payload)
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(e)
     return response.json()['results']
 
 
@@ -269,8 +276,11 @@ def update_highlight_to_page(title, content, database):
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
+    try:
+        response = session.patch(url, headers=headers, data=payload)
+    except requests.exceptions.RequestException as e:
+        raise SystemExit(e)
 
-    response = session.patch(url, headers=headers, data=payload)
     return response
 
 
@@ -310,7 +320,7 @@ def query_dict(args,MDX,MDD):
         message = str(html)[0:90]
         sendmessage(word, message)
         today = date.today().strftime("%Y-%m-%d")
-        respone = send_newword_to_notion(
+        response = send_newword_to_notion(
             word, source, today, NOTION_VOCABULARY_DATABASE)
 
 
@@ -328,7 +338,7 @@ def update_highlight(args):
         update_highlight_to_page(source, content, page_id)
     else:
         today = date.today().strftime("%Y-%m-%d")
-        respone = create_new_page_with_conetent(
+        response = create_new_page_with_conetent(
             source, content, today, NOTION_HIGHLIGHT_DATABASE)
     sendmessage('Highlight saved to', source)
 
@@ -345,13 +355,15 @@ def init(args):
     global NOTION_VOCABULARY_DATABASE
     global NOTION_API_KEY
 
-    DICT_PATH = dictionary['DICT_PATH']
-    NOTION_VOCABULARY_DATABASE = dictionary['NOTION_VOCABULARY_DATABASE']
-    NOTION_HIGHLIGHT_DATABASE = dictionary['NOTION_HIGHLIGHT_DATABASE']
-    NOTION_API_KEY = os.getenv('NOTION_API_KEY')
-    if NOTION_API_KEY is None:
-        NOTION_API_KEY = dictionary['NOTION_API_KEY']
-
+    try:
+        DICT_PATH = dictionary['DICT_PATH']
+        NOTION_VOCABULARY_DATABASE = dictionary['NOTION_VOCABULARY_DATABASE']
+        NOTION_HIGHLIGHT_DATABASE = dictionary['NOTION_HIGHLIGHT_DATABASE']
+        NOTION_API_KEY = os.getenv('NOTION_API_KEY')
+        if NOTION_API_KEY is None:
+            NOTION_API_KEY = dictionary['NOTION_API_KEY']
+    except Exception as exc:
+        logging.error("Please put your Notion info into the config file")
 
     if args["dict"]:
         from readmdict import MDD, MDX

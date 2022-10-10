@@ -1,7 +1,9 @@
 ui_main.py
 dist
 data
-notidict.egg-info
-notidict/config.yml
-notidict/*.mdx
-notidict/__pycache__
+notiondict.egg-info
+notiondict/config.yml
+notiondict/*.mdx
+notiondict/__pycache__
+.vscode
+build
