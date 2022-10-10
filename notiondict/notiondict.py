@@ -302,8 +302,12 @@ def get_application_title():
         return scr.get_active_window().get_name()
     elif sysstr == 'darwin':
         scpt_path = join("get_active_window_title_macos.scpt")
-        title = subprocess.check_output(['osascript', scpt_path])
-        return title.decode('utf-8')
+        try:
+            title = subprocess.check_output(['osascript', scpt_path])
+        except:
+            logging.error("Can't find active window")
+        finally:
+            return title.decode('utf-8')
 
 
 def query_dict(args,MDX,MDD):
