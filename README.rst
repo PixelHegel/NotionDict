@@ -26,7 +26,7 @@ What NotionDict can do?
 
 The two functions are sepreate functions, you can use only one of them or both.
 
-Preparition
+Preparation
 -----------
 1. Create two databases,  one for saving queried words, the other one for saving highlight texts.
 
@@ -115,3 +115,18 @@ There is a config file example in the repo, attach the config file by this way w
 ::
     
     notiondict dict book --config /home/username/config.yml
+
+
+Best practice
+-------------
+For Linux:
+
+Use xsel to pass the selected text to NotionDict
+
+::
+
+    notiondict dict "`xsel`"
+
+For MacOS:
+
+You can create a Shortcut to pass the acitve action to terminal.

@@ -12,6 +12,7 @@ Usage:
 Options:
  --config <file-path>  your own config file
  --help -h  show help
+ --version
 
 Examples:
  notiondict dict book --config /home/username/config.yml
@@ -33,7 +34,7 @@ import logging
 
 sysstr = sys.platform
 
-#from notiondict import __version__
+from notiondict import __version__
 DICT_PATH = ""
 NOTION_VOCABULARY_DATABASE = ""
 NOTION_HIGHLIGHT_DATABASE = ""
@@ -389,7 +390,7 @@ def init(args):
 
 
 def main():
-    args = docopt(__doc__)
+    args = docopt(__doc__, version=__version__)
     try:
         init(args)
     except KeyboardInterrupt:
