@@ -360,14 +360,26 @@ def init(args):
     global NOTION_API_KEY
 
     try:
-        DICT_PATH = dictionary['DICT_PATH']
-        NOTION_VOCABULARY_DATABASE = dictionary['NOTION_VOCABULARY_DATABASE']
-        NOTION_HIGHLIGHT_DATABASE = dictionary['NOTION_HIGHLIGHT_DATABASE']
+
         NOTION_API_KEY = os.getenv('NOTION_API_KEY')
+        DICT_PATH = os.getenv('DICT_PATH')
+        NOTION_VOCABULARY_DATABASE = os.getenv('NOTION_VOCABULARY_DATABASE')
+        NOTION_HIGHLIGHT_DATABASE = os.getenv('NOTION_HIGHLIGHT_DATABASE')
+
+        if DICT_PATH is None:
+            DICT_PATH = dictionary['DICT_PATH']
+
+        if NOTION_VOCABULARY_DATABASE is None:
+            NOTION_VOCABULARY_DATABASE = dictionary['NOTION_VOCABULARY_DATABASE']
+
+        if NOTION_HIGHLIGHT_DATABASE is None:
+            NOTION_HIGHLIGHT_DATABASE = dictionary['NOTION_HIGHLIGHT_DATABASE']
+
         if NOTION_API_KEY is None:
             NOTION_API_KEY = dictionary['NOTION_API_KEY']
+
     except Exception as exc:
-        logging.error("Please put your Notion info into the config file")
+        logging.error("Please put your Notion info into the env variables or config file")
 
     if args["dict"]:
         from readmdict import MDD, MDX
