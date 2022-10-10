@@ -140,7 +140,7 @@ def create_new_page_with_conetent(title, content, date, database):
                     }
                 ]
             },
-            "Updated": {
+            "Date": {
                 "date": {
                     "start": date,
                     "end": None
