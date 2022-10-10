@@ -10,9 +10,9 @@ Usage:
  notiondict -h | --help
 
 Options:
- --config <file-path>  your own config file
- --help -h  show help
- --version
+ --config <file-path>   show config
+ --help  -h show help info
+ --version  
 
 Examples:
  notiondict dict book --config /home/username/config.yml
