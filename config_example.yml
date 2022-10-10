@@ -1,3 +1,4 @@
 NOTION_HIGHLIGHT_DATABASE: Your_Notion_Database_Page_ID
 NOTION_VOCABULARY_DATABASE: Your_Notion_Database_Page_ID
 DICT_PATH: Your_Dict_Path
+NOTION_API_KEY: Your_Notion_API_KEY
