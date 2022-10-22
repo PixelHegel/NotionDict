@@ -7,3 +7,4 @@ notiondict/*.mdx
 notiondict/__pycache__
 .vscode
 build
+.DS_Store
