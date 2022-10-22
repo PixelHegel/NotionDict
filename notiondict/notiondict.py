@@ -314,6 +314,11 @@ def get_application_title():
 def query_dict(args,MDX,MDD):
     source = get_application_title()
     content = get_selected_text(args)
+    
+    #clear the xsel
+    if sysstr == 'linux':
+        subprocess.Popen(['xsel -c && xsel -cb', title, message])
+
     if len(content) > 3:
         headwords = [*MDX(DICT_PATH)]
         items = [*MDX(DICT_PATH).items()]
@@ -336,6 +341,11 @@ def update_highlight(args):
         content = content.decode('utf-8')
 
     source = get_application_title()
+
+    #clear the xsel
+    if sysstr == 'linux':
+        subprocess.Popen(['xsel -c && xsel -cb', title, message])
+
     result = query_page_by_title(source, NOTION_HIGHLIGHT_DATABASE)
 
     if len(result) > 0:
